@@ -11,12 +11,18 @@ namespace SceneTransitionSystem
 /// </summary>
 public static class GenericTransitionManager
 {
+    public readonly struct SceneNames
+    {
+        public static readonly string HomeMenuSceneName = "Home Menu Scene";
+        public static readonly string GameIntroductionSceneName = "Game Introduction Scene";
+    }
+
     /// <summary>
     /// Invoked when the process comes to an end, will return false or true depending on the result of loading the scenes.
     /// </summary>
     public static Action<bool> OnEnd;
 
-    static readonly string TransitionSceneName = "My transition scene";
+    static readonly string TransitionSceneName = "Generic Transition Scene";
 
     /// <summary>
     /// Transition to a scene by provided the TO scene and the calling scene.

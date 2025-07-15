@@ -1,5 +1,3 @@
-using System;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace SceneTransitionSystem
@@ -12,10 +10,10 @@ namespace SceneTransitionSystem
 public class TransitionManagerUser : MonoBehaviour
 {
     [Sirenix.OdinInspector.Button]
-    public async Task Transition(string sceneName)
+    public void Transition(string sceneName)
     {
         GenericTransitionManager.OnEnd += InterpretResult;
-        await GenericTransitionManager.TransitionToScene(sceneName, gameObject.scene);
+        _ = GenericTransitionManager.TransitionToScene(sceneName, gameObject.scene);
     }
 
     private void InterpretResult(bool result)
@@ -23,5 +21,5 @@ public class TransitionManagerUser : MonoBehaviour
         Debug.Log(result);
         GenericTransitionManager.OnEnd -= InterpretResult;
     }
-}
+    }
 }
