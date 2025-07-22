@@ -32,15 +32,12 @@ public static class GenericTransitionManager
     /// <returns>False on a failure this can include the transition scene too. True on all sceneloading working.</returns>
     public static async Task TransitionToScene(string sceneName, Scene prevScene)
     {
-        // Change UI focus to none.
-
         try
         {
             await SceneManager.LoadSceneAsync(TransitionSceneName, LoadSceneMode.Additive);
         }
         catch
         {
-            // Change UI focus to previous
             OnEnd.Invoke(false);
             return;
         }
@@ -51,7 +48,6 @@ public static class GenericTransitionManager
         }
         catch
         {
-            // Change UI focus to previous
             OnEnd.Invoke(false);
             return;
         }
@@ -60,7 +56,6 @@ public static class GenericTransitionManager
             await SceneManager.UnloadSceneAsync(TransitionSceneName);
         }
 
-        // Change UI focus to the new scene
         OnEnd.Invoke(true);
 
         await SceneManager.UnloadSceneAsync(prevScene);

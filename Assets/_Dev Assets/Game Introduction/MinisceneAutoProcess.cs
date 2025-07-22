@@ -12,7 +12,7 @@ public class MinisceneAutoProcess : MonoBehaviour
     [SerializeField]
     private GameObject mainComponentBlock;
 
-    void Awake()
+    void OnEnable()
     {
         mainComponentBlock.SetActive(true);
     }

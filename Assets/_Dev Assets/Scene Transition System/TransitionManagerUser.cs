@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace SceneTransitionSystem
 {
@@ -9,17 +10,29 @@ namespace SceneTransitionSystem
 /// </summary>
 public class TransitionManagerUser : MonoBehaviour
 {
+    private const string TransitionErrorHelperSceneName = "Transition Error Helper Scene";
+
     [Sirenix.OdinInspector.Button]
-    public void Transition(string sceneName)
+    public void Transition(string _sceneName)
     {
         GenericTransitionManager.OnEnd += InterpretResult;
-        _ = GenericTransitionManager.TransitionToScene(sceneName, gameObject.scene);
+        _ = GenericTransitionManager.TransitionToScene(_sceneName, gameObject.scene);
     }
 
     private void InterpretResult(bool result)
     {
-        Debug.Log(result);
         GenericTransitionManager.OnEnd -= InterpretResult;
+
+        if (result == false)
+        {
+            LoadTransitionErrorHelper();
+            return;
+        }
     }
+
+    private static void LoadTransitionErrorHelper()
+    {
+        SceneManager.LoadScene(TransitionErrorHelperSceneName, LoadSceneMode.Additive);
     }
+}
 }

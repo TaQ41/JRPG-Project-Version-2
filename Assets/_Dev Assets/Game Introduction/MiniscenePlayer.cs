@@ -17,7 +17,7 @@ public class MiniscenePlayer : MonoBehaviour
     private TransitionManagerUser transitionManagerUser;
 
     [SerializeField]
-    private List<Miniscene> Miniscenes;
+    private List<GameObject> Miniscenes;
     private int minisceneIndex = -1;
     public static Action MinisceneEnded;
 
@@ -33,9 +33,9 @@ public class MiniscenePlayer : MonoBehaviour
         TryNextMiniscene();
     }
 
+    [Sirenix.OdinInspector.Button]
     private void TryNextMiniscene()
     {
-        Debug.Log("Tried!");
         minisceneIndex += 1;
         if (minisceneIndex >= Miniscenes.Count)
         {
@@ -43,7 +43,7 @@ public class MiniscenePlayer : MonoBehaviour
             return;
         }
         
-        GameObject miniscene = Miniscenes[minisceneIndex].MinisceneObj;
+        GameObject miniscene = Miniscenes[minisceneIndex];
         if (miniscene == null)
         {
             Debug.LogError("Miniscene value was null! Index: " + minisceneIndex);
@@ -56,22 +56,7 @@ public class MiniscenePlayer : MonoBehaviour
 
     private void LoadHomeMenu()
     {
-        if (transitionManagerUser != null)
-        {
-            transitionManagerUser.Transition(GenericTransitionManager.SceneNames.HomeMenuSceneName);
-            return;
-        }
-
-        Debug.LogError("transitionManagerUser object is null! Now using direct sceneloading..");
-
-        try
-        {
-            SceneManager.LoadSceneAsync(GenericTransitionManager.SceneNames.HomeMenuSceneName);
-        }
-        catch
-        {
-            // Reference to the same way the generic transition manager user deals with this.
-        }
+        transitionManagerUser.Transition(GenericTransitionManager.SceneNames.HomeMenuSceneName);
     }
 }
 }
