@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 
 namespace SceneTransitionSystem
 {
-
+    
 /// <summary>
 /// The user method to call into the GenericTransitionManager class.
 /// Interprets the result of the TransitionManager through an action and may provide more direct scene access on failure.

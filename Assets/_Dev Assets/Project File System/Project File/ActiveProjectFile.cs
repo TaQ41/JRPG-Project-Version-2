@@ -31,11 +31,8 @@ public class ActiveProjectFile : ScriptableObject
     }
 
     [Sirenix.OdinInspector.Button]
-    public void ProjectFileGetAllIdentity()
+    public ProjectFile_BasicIndentityInfo[] ProjectFileGetAllIdentity()
     {
-        foreach (ProjectFile_BasicIndentityInfo identity in ProjectFileJSON_Reader.GetProjectFileIdentities())
-        {
-            Debug.Log(identity.ProjectGUID);
-        }
+        return ProjectFileJSON_Reader.GetProjectFileIdentities();
     }
 }

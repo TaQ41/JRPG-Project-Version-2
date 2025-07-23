@@ -22,7 +22,7 @@ public static class GenericTransitionManager
     /// </summary>
     public static Action<bool> OnEnd;
 
-    static readonly string TransitionSceneName = "Generic Transition Scene";
+    public static readonly string TransitionSceneName = "Generic Transition Scene";
 
     /// <summary>
     /// Transition to a scene by provided the TO scene and the calling scene.
