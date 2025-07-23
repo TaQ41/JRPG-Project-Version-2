@@ -21,4 +21,9 @@ public class AudioListenerActivator : MonoBehaviour
             SceneManager.sceneUnloaded -= EnableAudioListener;
         }
     }
+
+    private void OnDestroy()
+    {
+        SceneManager.sceneUnloaded -= EnableAudioListener;
+    }
 }
