@@ -7,12 +7,11 @@ namespace MenuNavigationSystem
 {
 
 /// <summary>
-/// Load and close applicable menu pages of a menu locally. On restarting the menu, this will
-/// once again, be in a default state.
+/// Load and close applicable menu pages of a menu locally. On restarting the menu, this will once again, be in a default state.
 /// </summary>
 public class MenuPageManager : MonoBehaviour
 {
-    [Sirenix.OdinInspector.ShowInInspector]
+    [ShowInInspector]
     private List<MenuPageDetails> menuPages, insetMenuPages;
 
     [SerializeField]
@@ -40,12 +39,12 @@ public class MenuPageManager : MonoBehaviour
             return false;
         }
 
-        menuPage.MenuPageParent.SetActive(true);
+        TryUpdateCanvasEnabledState(menuPage, true);
         if (menuPage.IsInset == false)
         {
             if (menuPages.Count != 0)
             {
-                menuPages[^1].MenuPageParent.SetActive(false);
+                TryUpdateCanvasEnabledState(menuPages[^1], false);
             }
 
             DisableInsetMenuPages();
@@ -73,7 +72,7 @@ public class MenuPageManager : MonoBehaviour
                 return false;
             }
 
-            menuPages[^2].MenuPageParent.SetActive(true);
+            TryUpdateCanvasEnabledState(menuPages[^2], true);
             RemoveAndDeactivateLastMenuPage(menuPages);
             return true;
         }
@@ -87,7 +86,7 @@ public class MenuPageManager : MonoBehaviour
     /// </summary>
     private void RemoveAndDeactivateLastMenuPage(List<MenuPageDetails> menuPagesList)
     {
-        menuPagesList[^1].MenuPageParent.SetActive(false);
+        TryUpdateCanvasEnabledState(menuPagesList[^1], false);
         menuPagesList.RemoveAt(menuPagesList.Count - 1);
     }
 
@@ -98,10 +97,26 @@ public class MenuPageManager : MonoBehaviour
     {
         foreach (MenuPageDetails menuPage in insetMenuPages)
         {
-            menuPage.MenuPageParent.SetActive(false);
+            TryUpdateCanvasEnabledState(menuPage, false);
         }
 
         insetMenuPages.Clear();
+    }
+
+    /// <summary>
+    /// Rather than activating and deactivating GameObjects, it would be better to enable/disable the canvas component on the menuPage.
+    /// </summary>
+    /// <returns>True on the canvas being found and updated, false otherwise.</returns>
+    private bool TryUpdateCanvasEnabledState(MenuPageDetails menuPage, bool enabledState)
+    {
+        if (menuPage.MenuPageParent.TryGetComponent(out Canvas canvas) == false)
+        {
+            Debug.LogError("There was an issue discovering the canvas component on this menuPage.");
+            return false;
+        }
+
+        canvas.enabled = enabledState;
+        return true;
     }
 }
 

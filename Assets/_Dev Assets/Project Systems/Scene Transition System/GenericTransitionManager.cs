@@ -13,8 +13,9 @@ public static class GenericTransitionManager
 {
     public readonly struct SceneNames
     {
-        public static readonly string HomeMenuSceneName = "Home Menu Scene";
-        public static readonly string GameIntroductionSceneName = "Game Introduction Scene";
+        public static readonly string HomeMenu = "Home Menu Scene";
+        public static readonly string GameIntroduction = "Game Introduction Scene";
+        public static readonly string GameLoaderAdministrator = "Game Loader Administrator Scene";
     }
 
     /// <summary>
@@ -26,10 +27,8 @@ public static class GenericTransitionManager
 
     /// <summary>
     /// Transition to a scene by provided the TO scene and the calling scene.
-    /// If the optional build index of the calling scene is omitted or clearly invalid, it will be inferred from the active scene.
-    /// UI focus will be set to none during this process and is only reset to the old scene on failure or to the new scene on success.
     /// </summary>
-    /// <returns>False on a failure this can include the transition scene too. True on all sceneloading working.</returns>
+    /// <returns>False on a failure of loading any scenes, this can include the transition scene too. True on all sceneloading working.</returns>
     public static async Task TransitionToScene(string sceneName, Scene prevScene)
     {
         try

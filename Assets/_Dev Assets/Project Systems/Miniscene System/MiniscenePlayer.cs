@@ -56,7 +56,7 @@ public class MiniscenePlayer : MonoBehaviour
 
     private void LoadHomeMenu()
     {
-        transitionManagerUser.Transition(GenericTransitionManager.SceneNames.HomeMenuSceneName);
+        transitionManagerUser.Transition(GenericTransitionManager.SceneNames.HomeMenu);
     }
 }
 }
