@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Sirenix.Serialization;
 
 namespace WorldMapData
 {
@@ -11,13 +12,16 @@ namespace WorldMapData
 [Serializable]
 public class WorldMap
 {
+    [UnityEngine.SerializeReference]
     public List<List<Tile>> Tiles = new();
 
-    [Sirenix.OdinInspector.Button]
-    public string TilesToJson()
-    {
-        return UnityEngine.JsonUtility.ToJson(Tiles);
-    }
+    [UnityEngine.SerializeField]
+    private bool m_isMapTypeBattle;
+    public bool IsMapTypeBattle { get {return m_isMapTypeBattle;} }
+
+    [UnityEngine.SerializeField]
+    private string m_mapName;
+    public string MapName { get {return m_mapName;} }
 
     public Tile this[int xCoord, int zCoord]
     {

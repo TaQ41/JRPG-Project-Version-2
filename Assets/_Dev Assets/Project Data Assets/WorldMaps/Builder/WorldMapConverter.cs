@@ -13,7 +13,7 @@ namespace WorldMapData.Builder
 public class WorldMapConverter : SerializedMonoBehaviour
 {
     [SerializeField]
-    private List<List<Tile>> Map;
+    private List<ListWrapper<Tile>> Map;
 
     public GameObject SceneViewMapParent;
     public GameObject SceneViewMapGeneratedParent;
@@ -43,7 +43,7 @@ public class WorldMapConverter : SerializedMonoBehaviour
                 Map.Add(new());
             }
 
-            Map[(int)mTile.MapCoords.z].Add(CreateTile(mTile));
+            Map[(int)mTile.MapCoords.z].values.Add(CreateTile(mTile));
         }
     }
 
@@ -72,9 +72,9 @@ public class WorldMapConverter : SerializedMonoBehaviour
             return;
         }
 
-        foreach (List<Tile> zList in Map)
+        foreach (ListWrapper<Tile> zList in Map)
         {
-            foreach (Tile xTile in zList)
+            foreach (Tile xTile in zList.values)
             {
                 CreateMockTile(xTile);
             }
@@ -102,7 +102,7 @@ public class WorldMapConverter : SerializedMonoBehaviour
     [Button]
     public string GenerateTextFromCSharpMap(bool generateEntireClassSignature = false)
     {
-        if (Map == null)
+        if (Map1 == null)
         {
             Debug.LogError("The map must be set to generate FROM!");
             return "";
@@ -110,12 +110,12 @@ public class WorldMapConverter : SerializedMonoBehaviour
 
         string text = "";
         if (generateEntireClassSignature == true)
-            text = "using System.Collections.Generic;using UnityEngine;namespace WorldMapData.Maps{public static class MapObject{public static List<List<Tile>>Tiles=";
+            text = "using System.Collections.Generic;using UnityEngine;namespace WorldMapData.Maps{public static class MyMapObject{public static readonly string MapName=\"\";public static readonly List<ListWrapper<Tile>> Tiles=";
 
-        text += "new List<List<Tile>>(){";
-        foreach (List<Tile> objChildList in Map)
+        text += "new List<ListWrapper<Tile>>{";
+        foreach (List<Tile> objChildList in Map1)
         {
-            text += "new List<Tile>(){";
+            text += "new ListWrapper<Tile>{values=new List<Tile>{";
             foreach (Tile objChild in objChildList)
             {
                 text += "new Tile(){";
@@ -125,7 +125,7 @@ public class WorldMapConverter : SerializedMonoBehaviour
                 text += "},";
             }
 
-            text += "},";
+            text += "}},";
         }
         
         text += "};";

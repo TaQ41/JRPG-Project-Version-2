@@ -13,12 +13,14 @@ public static class ListIndexExtensions
     /// <exception cref="NullReferenceException"></exception>
     public static int IncrementIndex<T>(int index, List<T> values)
     {
-        if (values.IsNullOrEmpty())
+        try
+        {
+            return ++index >= values.Count ? 0 : index;
+        }
+        catch
         {
             throw new NullReferenceException(EmptyOrNullValuesListMessage);
         }
-
-        return ++index >= values.Count ? 0 : index;
     }
 
     /// <summary>
@@ -29,16 +31,13 @@ public static class ListIndexExtensions
     /// <exception cref="IndexOutOfRangeException"></exception>
     public static T GetItem<T>(int index, List<T> values)
     {
-        if (values.IsNullOrEmpty())
+        try
+        {
+            return values[index];
+        }
+        catch (NullReferenceException)
         {
             throw new NullReferenceException(EmptyOrNullValuesListMessage);
         }
-
-        if (index < 0 || index >= values.Count)
-        {
-            throw new IndexOutOfRangeException();
-        }
-
-        return values[index];
     }
 }
