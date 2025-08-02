@@ -82,7 +82,7 @@ public class MenuPageManager : MonoBehaviour
     }
 
     /// <summary>
-    /// NOTE: Called from the 'TryCloseTopMenuPage', so, there being at least one item has already been confirmed.
+    /// NOTE: Called from the close page method, so, there being at least one item has already been confirmed.
     /// </summary>
     private void RemoveAndDeactivateLastMenuPage(List<MenuPageDetails> menuPagesList)
     {

@@ -30,7 +30,7 @@ public class TransitionManagerUser : MonoBehaviour
         }
     }
 
-    private static void LoadTransitionErrorHelper()
+    public static void LoadTransitionErrorHelper()
     {
         SceneManager.LoadScene(TransitionErrorHelperSceneName, LoadSceneMode.Additive);
     }
