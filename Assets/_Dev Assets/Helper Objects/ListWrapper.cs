@@ -9,31 +9,16 @@ using WorldMapData;
 [Serializable]
 public class ListWrapper<T>
 {
-    public List<T> values;
+    public List<T> Values = new();
     public T this[int index]
     {
         get
         {
-            return values[index];
+            return Values[index];
         }
         set
         {
-            values[index] = value;
+            Values[index] = value;
         }
     }
-}
-
-public class TestClass
-{
-    public List<ListWrapper<Tile>> tiles =
-    new List<ListWrapper<Tile>>
-    {
-        new ListWrapper<Tile>
-        {
-            values = new List<Tile>
-            {
-                new Tile {MapCoords=new(), WorldCoords=new(), IsNavigable=true},
-            },
-        }
-    };
 }

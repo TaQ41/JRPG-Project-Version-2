@@ -12,8 +12,7 @@ namespace WorldMapData
 [Serializable]
 public class WorldMap
 {
-    [UnityEngine.SerializeReference]
-    public List<List<Tile>> Tiles = new();
+    public List<ListWrapper<Tile>> Tiles = new();
 
     [UnityEngine.SerializeField]
     private bool m_isMapTypeBattle;
@@ -38,19 +37,16 @@ public class WorldMap
 
     public bool TryGetTile(int xCoord, int zCoord, out Tile tile)
     {
-        if (xCoord < 0 || zCoord < 0)
+        try
         {
-            tile = default(Tile);
+            tile = Tiles[zCoord][xCoord];
+        }
+        catch
+        {
+            tile = default;
             return false;
         }
 
-        if (zCoord >= Tiles.Count || xCoord >= Tiles[zCoord].Count)
-        {
-            tile = default(Tile);
-            return false;
-        }
-
-        tile = Tiles[zCoord][xCoord];
         return true;
     }
 }

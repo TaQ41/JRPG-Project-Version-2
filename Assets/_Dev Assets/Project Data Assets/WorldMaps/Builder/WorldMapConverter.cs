@@ -43,7 +43,7 @@ public class WorldMapConverter : SerializedMonoBehaviour
                 Map.Add(new());
             }
 
-            Map[(int)mTile.MapCoords.z].values.Add(CreateTile(mTile));
+            Map[(int)mTile.MapCoords.z].Values.Add(CreateTile(mTile));
         }
     }
 
@@ -74,7 +74,7 @@ public class WorldMapConverter : SerializedMonoBehaviour
 
         foreach (ListWrapper<Tile> zList in Map)
         {
-            foreach (Tile xTile in zList.values)
+            foreach (Tile xTile in zList.Values)
             {
                 CreateMockTile(xTile);
             }
@@ -102,7 +102,7 @@ public class WorldMapConverter : SerializedMonoBehaviour
     [Button]
     public string GenerateTextFromCSharpMap(bool generateEntireClassSignature = false)
     {
-        if (Map1 == null)
+        if (Map == null)
         {
             Debug.LogError("The map must be set to generate FROM!");
             return "";
@@ -113,12 +113,12 @@ public class WorldMapConverter : SerializedMonoBehaviour
             text = "using System.Collections.Generic;using UnityEngine;namespace WorldMapData.Maps{public static class MyMapObject{public static readonly string MapName=\"\";public static readonly List<ListWrapper<Tile>> Tiles=";
 
         text += "new List<ListWrapper<Tile>>{";
-        foreach (List<Tile> objChildList in Map1)
+        foreach (ListWrapper<Tile> objChildList in Map)
         {
             text += "new ListWrapper<Tile>{values=new List<Tile>{";
-            foreach (Tile objChild in objChildList)
+            foreach (Tile objChild in objChildList.Values)
             {
-                text += "new Tile(){";
+                text += "new Tile{";
                 text += mapCoordsText  + "=" + Vector3ToText(objChild.MapCoords) + ",";
                 text += worldCoordsText + "=" + Vector3ToText(objChild.WorldCoords) + ",";
                 text += isNavigableText + "=" + BoolToText(objChild.IsNavigable) + ",";
@@ -155,7 +155,7 @@ public class WorldMapConverter : SerializedMonoBehaviour
     // Not my favorite, but it will have to be what it is for now...
 
     [SerializeField]
-    private List<List<Tile>> Map1;
+    private List<ListWrapper<Tile>> Map1;
 
     /// <summary>
     /// Maintain the ExtractTileInfoFromText as the Tile object grows!
@@ -170,7 +170,7 @@ public class WorldMapConverter : SerializedMonoBehaviour
         ParseNextMapSection(text[(text.IndexOf('{') + 1)..], new());
     }
 
-    private void ParseNextMapSection(string text, List<List<Tile>> tilesObj)
+    private void ParseNextMapSection(string text, List<ListWrapper<Tile>> tilesObj)
     {
         // The first open bracket from the beginning of the string index
         int openBracketIndex = text.IndexOf('{');
@@ -181,19 +181,20 @@ public class WorldMapConverter : SerializedMonoBehaviour
             return;
         }
 
-        if (text[..openBracketIndex].Contains("new List<Tile>()"))
+        if (text[..openBracketIndex].Contains("new ListWrapper<Tile>"))
         {
             tilesObj.Add(new());
             text = text[(openBracketIndex + 1)..];
+            text = text[(text.IndexOf('{') + 1)..]; // Just skip the whole "values = new List<Tile>{" instead
             ParseNextMapSection(text, tilesObj);
             return;
         }
 
-        if (text[..openBracketIndex].Contains("new Tile()"))
+        if (text[..openBracketIndex].Contains("new Tile"))
         {
-            tilesObj[^1].Add(new());
+            tilesObj[^1].Values.Add(new());
             text = text[(openBracketIndex + 1)..];
-            tilesObj[^1][^1] = ExtractTileInfoFromText(text, out string remainingText);
+            tilesObj[^1].Values[^1] = ExtractTileInfoFromText(text, out string remainingText);
             ParseNextMapSection(remainingText, tilesObj);
             return;
         }
