@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using WorldMapData;
 
 /// <summary>
 /// Allows double nested lists to be serialized natively by wrapping the secondary list in a class declaration.

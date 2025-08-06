@@ -1,8 +1,6 @@
 using UnityEngine;
 using Sirenix.OdinInspector;
 using System.Collections.Generic;
-using System;
-using Sirenix.Utilities;
 
 namespace WorldMapData.Builder
 {
@@ -18,6 +16,14 @@ public class WorldMapConverter : SerializedMonoBehaviour
     public GameObject SceneViewMapParent;
     public GameObject SceneViewMapGeneratedParent;
     public GameObject TileMockObject;
+
+    [SerializeField]
+    private List<ListWrapper<Tile>> Map1;
+
+    // Tile property setters
+    private const string mapCoordsText = "MapCoords";
+    private const string worldCoordsText = "WorldCoords";
+    private const string isNavigableText = "IsNavigable";
 
     [Button]
     public void GenerateCSharpMap()
@@ -90,22 +96,21 @@ public class WorldMapConverter : SerializedMonoBehaviour
         mockTile.SetActive(true);
     }
 
-    // Tile property setters
-    private const string mapCoordsText = "MapCoords";
-    private const string worldCoordsText = "WorldCoords";
-    private const string isNavigableText = "IsNavigable";
-
     /// <summary>
     /// Maintain as the Tile class grows.
     /// Converts the CSharp list object in this object to raw text to be used in a world tilemap preset file.
     /// </summary>
+    /// <remarks>
+    /// PrettyPrint was once developed for this, to get pretty print, a text file at "C:\Users\ashto\OneDrive\Documents\Development\External C#scripts\PrettyPrint TileMapBuilder GenerateTextFromCSharpMap Backup.txt"
+    /// will contain the text of the prettyPrint implementation.
+    /// </remarks>
     [Button]
     public string GenerateTextFromCSharpMap(bool generateEntireClassSignature = false)
     {
         if (Map == null)
         {
             Debug.LogError("The map must be set to generate FROM!");
-            return "";
+            return string.Empty;
         }
 
         string text = "";
@@ -115,11 +120,11 @@ public class WorldMapConverter : SerializedMonoBehaviour
         text += "new List<ListWrapper<Tile>>{";
         foreach (ListWrapper<Tile> objChildList in Map)
         {
-            text += "new ListWrapper<Tile>{values=new List<Tile>{";
+            text += "new ListWrapper<Tile>{Values=new List<Tile>{";
             foreach (Tile objChild in objChildList.Values)
             {
                 text += "new Tile{";
-                text += mapCoordsText  + "=" + Vector3ToText(objChild.MapCoords) + ",";
+                text += mapCoordsText + "=" + Vector3ToText(objChild.MapCoords) + ",";
                 text += worldCoordsText + "=" + Vector3ToText(objChild.WorldCoords) + ",";
                 text += isNavigableText + "=" + BoolToText(objChild.IsNavigable) + ",";
                 text += "},";
@@ -149,13 +154,6 @@ public class WorldMapConverter : SerializedMonoBehaviour
     {
         return boolean.ToString().ToLower();
     }
-
-    // ...
-    // ...
-    // Not my favorite, but it will have to be what it is for now...
-
-    [SerializeField]
-    private List<ListWrapper<Tile>> Map1;
 
     /// <summary>
     /// Maintain the ExtractTileInfoFromText as the Tile object grows!
