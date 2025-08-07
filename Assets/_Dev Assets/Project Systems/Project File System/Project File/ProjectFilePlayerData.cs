@@ -13,7 +13,7 @@ public struct ProjectFilePlayerData
 {
     public int PlayerTurn;
 
-    [UnityEngine.SerializeReference]
+    [UnityEngine.SerializeField]
     private List<Player> Players;
 
     /// <remarks>
@@ -21,12 +21,22 @@ public struct ProjectFilePlayerData
     /// </remarks>
     public readonly Player GetCurrentPlayer()
     {
-        return ListIndexExtensions.GetItem(PlayerTurn, Players);
+        return GetPlayer(PlayerTurn);
+    }
+
+    public readonly Player GetPlayer(int index)
+    {
+        return Players.GetItem(index);
+    }
+
+    public readonly Player[] GetPlayers()
+    {
+        return Players.ToArray();
     }
 
     public int IncrementTurnIndex()
     {
-        PlayerTurn = ListIndexExtensions.IncrementIndex(PlayerTurn, Players);
+        PlayerTurn = Players.IncrementIndex(PlayerTurn);
         return PlayerTurn;
     }
 }

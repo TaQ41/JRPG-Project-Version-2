@@ -11,7 +11,7 @@ public static class ListIndexExtensions
     /// </summary>
     /// <returns>The new index value.</returns>
     /// <exception cref="NullReferenceException"></exception>
-    public static int IncrementIndex<T>(int index, List<T> values)
+    public static int IncrementIndex<T>(this List<T> values, int index)
     {
         try
         {
@@ -29,15 +29,18 @@ public static class ListIndexExtensions
     /// <returns>The item of the list's index.</returns>
     /// <exception cref="NullReferenceException"></exception>
     /// <exception cref="IndexOutOfRangeException"></exception>
-    public static T GetItem<T>(int index, List<T> values)
+    public static T GetItem<T>(this List<T> values, int index)
     {
-        try
-        {
-            return values[index];
-        }
-        catch (NullReferenceException)
+        if (values.IsNullOrEmpty())
         {
             throw new NullReferenceException(EmptyOrNullValuesListMessage);
         }
+
+        if (index >= values.Count || index < 0)
+        {
+            throw new IndexOutOfRangeException();
+        }
+
+        return values[index];
     }
 }
