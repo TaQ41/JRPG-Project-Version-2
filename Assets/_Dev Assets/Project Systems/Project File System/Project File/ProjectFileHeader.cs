@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace ProjectFileSystem
@@ -22,18 +21,6 @@ public class ProjectFileHeader
 
     public ProjectFilePlayerData PlayerData;
 
-    public List<WorldMapData.WorldMap> WorldMaps;
-    public WorldMapData.WorldMap SearchForMap(string mapName)
-    {
-        foreach (WorldMapData.WorldMap worldMap in WorldMaps)
-        {
-            if (worldMap.MapName == mapName)
-            {
-                return worldMap;
-            }
-        }
-
-        throw new Exception("No worldMap with the name \"" + mapName + "\" was found in the WorldMaps list of the projectFileHeader!");
-    }
+    public ProjectFileWorldMapData WorldMapData;
 }
 }

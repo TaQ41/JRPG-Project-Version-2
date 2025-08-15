@@ -12,6 +12,9 @@ namespace GameLoadingSystem
 /// </summary>
 public class GameLoader : MonoBehaviour
 {
+    [SerializeField]
+    private GameObject cameraObj;
+
     [SerializeField] private UIUpdateSystem.UIDataLinker UIDataLinker;
     [SerializeField] private UIUpdateSystem.UIDisplayer UIDisplayer;
 
@@ -20,32 +23,7 @@ public class GameLoader : MonoBehaviour
 
     [SerializeField]
     private ActiveProjectFile projectFile;
-
-    private EntityData.Player CurrentPlayer
-    {
-        get
-        {
-            EntityData.Player player = default;
-
-            try 
-            {
-                player = projectFile.Data.PlayerData.GetCurrentPlayer();
-            }
-            catch (NullReferenceException e)
-            {
-                Debug.LogError(e.Message);
-                // Load the error helper and use this as a potential loss of data type of error. IE corruption
-            }
-            catch (IndexOutOfRangeException e)
-            {
-                Debug.LogError(e.Message);
-                // Load the error helper and use this as a turn system fail, allow the turn system to be modified to link to the selected player after the player
-                // finished their turn of which the error happened.
-            }
-
-            return player;
-        }
-    }
+    private EntityData.Player CurrentPlayer { get {return projectFile.Data.PlayerData.GetCurrentPlayer();} }
 
     private Scene GameMapSceneContext;
 
@@ -73,6 +51,7 @@ public class GameLoader : MonoBehaviour
         }
         catch (NotImplementedException)
         {
+            Debug.Log("The game events have not been implemented.");
         }
 
         LoadGameTurnWorld();
@@ -111,6 +90,7 @@ public class GameLoader : MonoBehaviour
 
         // Placing entities on map load - II
         EntityPlacement.InitializeEntitiesOnMap(projectFile.Data);
+        CameraPlacement.TryLinkCameraToEntity(projectFile.Data.PlayerData.GetCurrentPlayer(), cameraObj);
 
         // Readying player UI - III
         UIDisplayer.Show(UIDisplayer.PlayerInfoCanvas);
@@ -130,19 +110,10 @@ public class GameLoader : MonoBehaviour
     /// <exception cref="NullReferenceException"></exception>
     private async Task LoadGameMap()
     {
-        EntityData.Player player;
-        try
-        {
-            player = CurrentPlayer;
-        }
-        catch
-        {
-            return;
-        }
-
+        EntityData.Player player = CurrentPlayer;
         string loadedMapName = player.livingMapName;
 
-        try 
+        try
         {
             await SceneManager.LoadSceneAsync(loadedMapName + " Scene", LoadSceneMode.Additive);
             GameMapSceneContext = SceneManager.GetSceneByName(loadedMapName + " Scene");

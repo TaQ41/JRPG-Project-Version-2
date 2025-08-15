@@ -16,17 +16,29 @@ public struct ProjectFilePlayerData
     [UnityEngine.SerializeField]
     private List<Player> Players;
 
-    /// <remarks>
-    /// Uses the ListIndexExtensions.GetItem<> method and directly returns its result using the PlayerTurn as the index and the Players list as the values.
-    /// </remarks>
+    /// <summary>
+    /// Macro to getting the currentPlayer using the PlayerTurn in this class.
+    /// </summary>
+    /// <returns>Null on failure.</returns>
     public readonly Player GetCurrentPlayer()
     {
         return GetPlayer(PlayerTurn);
     }
 
+    /// <summary>
+    /// Get a player in the Players list with a given index.
+    /// </summary>
+    /// <returns>Null on an invalid index.</returns>
     public readonly Player GetPlayer(int index)
     {
-        return Players.GetItem(index);
+        try
+        {
+            return Players.GetItem(index);
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     public readonly Player[] GetPlayers()
@@ -38,6 +50,12 @@ public struct ProjectFilePlayerData
     {
         PlayerTurn = Players.IncrementIndex(PlayerTurn);
         return PlayerTurn;
+    }
+
+    public readonly WorldMapData.WorldMap GetPlayerMap(Player player, ProjectFileWorldMapData projectFileWorldMapData)
+    {
+        string playerMapName = player.livingMapName;
+        return projectFileWorldMapData.SearchForMap(playerMapName);
     }
 }
 }

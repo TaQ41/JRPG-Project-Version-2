@@ -27,7 +27,7 @@ public static class EntityPlacement
 
         try
         {
-            worldMap = projectFileHeader.SearchForMap(currPlayerMapName);
+            worldMap = projectFileHeader.WorldMapData.SearchForMap(currPlayerMapName);
         }
         catch (Exception e)
         {
@@ -54,7 +54,7 @@ public static class EntityPlacement
             foreach (EntityData.Entity entity in FindEntitiesInBattle())
             {
                 entity.ActiveGameObject = GameObject.Instantiate(entity.EntityObjectAsset, entitiesInSceneParent);
-                PlaceEntity(entity, mapCoords: worldMap.Tiles[entity.LivingTileCoords.z][entity.LivingTileCoords.x].MapCoords);
+                PlaceEntity(entity, mapCoords: worldMap.Tiles[entity.BattleTileCoords.z][entity.BattleTileCoords.x].MapCoords);
             }
 
             return;
@@ -68,7 +68,7 @@ public static class EntityPlacement
             }
 
             player.ActiveGameObject = GameObject.Instantiate(player.EntityObjectAsset, entitiesInSceneParent);
-            PlaceEntity(player, mapCoords: worldMap.Tiles[player.livingMapTileCoords.z][player.livingMapTileCoords.x].MapCoords);
+            PlaceEntity(player, mapCoords: worldMap.Tiles[player.WorldTileCoords.z][player.WorldTileCoords.x].MapCoords);
         }
     }
 
@@ -78,7 +78,7 @@ public static class EntityPlacement
     /// <exception cref="NullReferenceException"></exception>
     public static void PlaceEntity(EntityData.Entity entity, Vector3 mapCoords)
     {
-        if (!entity.ActiveGameObject) 
+        if (!entity.ActiveGameObject)
         {
             throw new NullReferenceException("The entity you are trying to move has had its scene gameObject destroyed.");
         }

@@ -13,7 +13,7 @@ public class Entity
     /// <summary>
     /// What coords does the entity currently live on? This is used with the secondary maps.
     /// </summary>
-    public Vector3Int LivingTileCoords;
+    public Vector3Int BattleTileCoords;
 
     /// <summary>
     /// What GameObject is this entity tied to?

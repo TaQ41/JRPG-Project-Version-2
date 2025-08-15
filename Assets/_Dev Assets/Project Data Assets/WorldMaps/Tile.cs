@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace WorldMapData
@@ -7,7 +8,7 @@ namespace WorldMapData
 /// A single object that is used to hold a position on a world map, this includes various properties that a tile interpreter can use to
 /// control effects on the game.
 /// </summary>
-[System.Serializable]
+[Serializable]
 public class Tile
 {
     /// <summary>
@@ -23,8 +24,13 @@ public class Tile
     /// <summary>
     /// The coords of the tile in the actual world. Used to map the player asset onto the tile.
     /// (The player placement will place the player slightly above these coords.)
-
     /// </summary>
     public Vector3 WorldCoords;
+
+    /// <summary>
+    /// The amount of moves this tile requires to be able to be moved on. Also how many moves it subtracts from the remaining moves.
+    /// (Default is 1. Yes, a negative number would increment the remaining move count..)
+    /// </summary>
+    public int MoveDecrementAmount = 1;
 }
 }

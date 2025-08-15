@@ -17,7 +17,7 @@ public class Player : Entity
     /// <summary>
     /// The coords of the player on the primary map, this should not be used for battle maps.
     /// </summary>
-    public Vector3Int livingMapTileCoords;
+    public Vector3Int WorldTileCoords;
 
     [Sirenix.OdinInspector.Title ("Player Identity")]
 
