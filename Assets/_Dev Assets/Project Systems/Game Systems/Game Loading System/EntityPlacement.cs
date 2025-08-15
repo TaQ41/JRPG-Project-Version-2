@@ -68,7 +68,7 @@ public static class EntityPlacement
             }
 
             player.ActiveGameObject = GameObject.Instantiate(player.EntityObjectAsset, entitiesInSceneParent);
-            PlaceEntity(player, mapCoords: worldMap.Tiles[player.WorldTileCoords.z][player.WorldTileCoords.x].MapCoords);
+            PlaceEntity(player, mapCoords: worldMap.Tiles[player.WorldTileCoords.x][player.WorldTileCoords.z].MapCoords);
         }
     }
 

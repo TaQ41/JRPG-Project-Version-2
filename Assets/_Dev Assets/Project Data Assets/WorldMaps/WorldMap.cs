@@ -25,7 +25,7 @@ public class WorldMap
     {
         get
         {
-            return Tiles[zCoord][xCoord];
+            return GetTileInList(xCoord, zCoord);
         }
 
         set
@@ -36,17 +36,37 @@ public class WorldMap
 
     public bool TryGetTile(int xCoord, int zCoord, out Tile tile)
     {
-        try
+        tile = GetTileInList(xCoord, zCoord);
+
+        if (tile == null)
         {
-            tile = Tiles[zCoord][xCoord];
-        }
-        catch
-        {
-            tile = default;
             return false;
         }
 
         return true;
+    }
+
+    private Tile GetTileInList(int xCoord, int zCoord)
+    {
+        ListWrapper<Tile> zList;
+        try
+        {
+            zList = Tiles[zCoord];
+        }
+        catch
+        {
+            return null;
+        }
+
+        foreach (Tile xTile in zList.Values)
+        {
+            if ((int)xTile.MapCoords.x == xCoord)
+            {
+                return xTile;
+            }
+        }
+
+        return null;
     }
 }
 }

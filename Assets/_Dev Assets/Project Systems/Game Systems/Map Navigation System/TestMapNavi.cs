@@ -27,7 +27,7 @@ public class TestMapNavi : MonoBehaviour
             EntityPlacement.PlaceEntity(currPlayer, currPlayer.WorldTileCoords);
         }
 
-        switch (returnValue)
+        /*switch (returnValue)
         {
             case MapNavigator.NO_ISSUES:
                 Debug.Log("No issues detected.");
@@ -50,7 +50,7 @@ public class TestMapNavi : MonoBehaviour
             break;
 
             default:Debug.Log("This returned something other than a selected constant?");break;
-        }
+        }*/
     }
 
     void OnEnable()

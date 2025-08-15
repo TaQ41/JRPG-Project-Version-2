@@ -50,6 +50,7 @@ namespace MapNavigationSystem
         public int TryMoveToTile(Vector3Int destCoords, out Tile destTile)
         {
             destTile = default;
+            Debug.Log("currPos: " + currPos);
             Tile currTile = worldMap[currPos.x, currPos.z];
 
             if (RemMoveCount < currTile.MoveDecrementAmount)
@@ -58,11 +59,12 @@ namespace MapNavigationSystem
             }
 
             Vector3Int destPos = currPos + destCoords;
+            Debug.Log("destPos: " + destPos);
             if (!worldMap.TryGetTile(destPos.x, destPos.z, out Tile destTile2))
             {
                 return TILE_DOES_NOT_EXIST;
             }
-            
+
             if (DidAllCustomConditionsPass(destTile2) == false)
             {
                 return CUSTOM_CONDITION_FAIL;
