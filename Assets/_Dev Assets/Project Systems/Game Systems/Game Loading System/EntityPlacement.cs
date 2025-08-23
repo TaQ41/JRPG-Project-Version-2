@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace GameLoadingSystem
 {
@@ -37,17 +38,7 @@ public static class EntityPlacement
         }
 
         Transform entitiesInSceneParent;
-        try
-        {
-            entitiesInSceneParent = GameObject.FindWithTag(EntitiesInSceneParentTag).transform;
-        }
-        catch (UnityException ue)
-        {
-            Debug.LogError("The entitiesInSceneParent gameObject was not found! : " + ue.Message);
-            GameObject tempReplacement = GameObject.Instantiate(new GameObject());
-            tempReplacement.tag = EntitiesInSceneParentTag;
-            entitiesInSceneParent = tempReplacement.transform;
-        }
+        entitiesInSceneParent = GameObject.FindWithTag(EntitiesInSceneParentTag).transform;
 
         if (worldMap.IsMapTypeBattle == true)
         {
@@ -68,7 +59,8 @@ public static class EntityPlacement
             }
 
             player.ActiveGameObject = GameObject.Instantiate(player.EntityObjectAsset, entitiesInSceneParent);
-            PlaceEntity(player, mapCoords: worldMap.Tiles[player.WorldTileCoords.x][player.WorldTileCoords.z].MapCoords);
+            Debug.Log(player.WorldTileCoords.z);
+            PlaceEntity(player, mapCoords: worldMap[player.WorldTileCoords.z, player.WorldTileCoords.x].MapCoords);
         }
     }
 

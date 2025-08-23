@@ -21,11 +21,11 @@ public class WorldMap
     private string m_mapName;
     public string MapName { get {return m_mapName;} }
 
-    public Tile this[int xCoord, int zCoord]
+    public Tile this[int zCoord, int xCoord]
     {
         get
         {
-            return GetTileInList(xCoord, zCoord);
+            return GetTileInList(zCoord, xCoord);
         }
 
         set
@@ -34,9 +34,9 @@ public class WorldMap
         }
     }
 
-    public bool TryGetTile(int xCoord, int zCoord, out Tile tile)
+    public bool TryGetTile(int zCoord, int xCoord, out Tile tile)
     {
-        tile = GetTileInList(xCoord, zCoord);
+        tile = GetTileInList(zCoord, xCoord);
 
         if (tile == null)
         {
@@ -46,7 +46,7 @@ public class WorldMap
         return true;
     }
 
-    private Tile GetTileInList(int xCoord, int zCoord)
+    private Tile GetTileInList(int zCoord, int xCoord)
     {
         ListWrapper<Tile> zList;
         try

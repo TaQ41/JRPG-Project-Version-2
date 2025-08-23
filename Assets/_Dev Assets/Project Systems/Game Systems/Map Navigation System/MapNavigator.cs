@@ -14,12 +14,12 @@ namespace MapNavigationSystem
         private Vector3Int currPos;
         private WorldMap worldMap;
 
-        // TryMoveToTile Return codes (Numbers are nonsensical, but unique)
+        // TryMoveToTile Unique Return codes
         public const int NO_ISSUES = 0;
-        public const int TILE_DOES_NOT_EXIST = 14;
-        public const int INSUFFICIENT_MOVECOUNT = 25;
-        public const int CUSTOM_CONDITION_FAIL = 91;
-        public const int OUT_OF_RANGE = 142;
+        public const int TILE_DOES_NOT_EXIST = 1;
+        public const int INSUFFICIENT_MOVECOUNT = 2;
+        public const int CUSTOM_CONDITION_FAIL = 3;
+        public const int OUT_OF_RANGE = 4;
 
         public void ExtractPlayerInfo()
         {
@@ -51,7 +51,7 @@ namespace MapNavigationSystem
         {
             destTile = default;
             Debug.Log("currPos: " + currPos);
-            Tile currTile = worldMap[currPos.x, currPos.z];
+            Tile currTile = worldMap[currPos.z, currPos.x];
 
             if (RemMoveCount < currTile.MoveDecrementAmount)
             {
@@ -60,7 +60,7 @@ namespace MapNavigationSystem
 
             Vector3Int destPos = currPos + destCoords;
             Debug.Log("destPos: " + destPos);
-            if (!worldMap.TryGetTile(destPos.x, destPos.z, out Tile destTile2))
+            if (!worldMap.TryGetTile(destPos.z, destPos.x, out Tile destTile2))
             {
                 return TILE_DOES_NOT_EXIST;
             }
@@ -74,11 +74,6 @@ namespace MapNavigationSystem
             {
                 return OUT_OF_RANGE;
             }
-
-              // TODO: Fix the map access issue. This appears to be reading incorrect data from somewhere that should have tiles or believes tiles are in
-              // locations in which they aren't. Likely, a tile access method fault or a storage fault. |Hidden error| Replicate: Move around with a single player
-              // that only calls the a returns the TryMoveToTile method on the map 'Tutorial'. This is setup as of Aug/13/25 at about 11:52pm
-
 
             destTile = destTile2;
             return NO_ISSUES;

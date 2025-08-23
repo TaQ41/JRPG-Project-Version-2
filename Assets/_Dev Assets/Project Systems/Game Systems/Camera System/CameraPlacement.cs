@@ -12,9 +12,8 @@ public static class CameraPlacement
 {
     private const string CameraGameObjectTag = "MainCamera";
 
-    // Bored?
-    private static readonly Vector3 posMod = new Vector3(0, 0b101, -0b101);
-    private static readonly Vector3 rotEulerMod = new Vector3(0b101101, 0b0, 0b0);
+    private static readonly Vector3 posMod = new Vector3(-6, 8, -6);
+    private static readonly Vector3 rotEulerMod = new Vector3(55, 45, 0);
 
     /// <summary>
     /// Link the camera to an entity that has an active GameObject in the scene.
@@ -44,8 +43,8 @@ public static class CameraPlacement
             return false;
         }
 
-        cameraGo.transform.SetLocalPositionAndRotation(posMod, Quaternion.Euler(rotEulerMod));
         cameraGo.transform.SetParent(entityGo.transform);
+        cameraGo.transform.SetLocalPositionAndRotation(posMod, Quaternion.Euler(rotEulerMod));
         return true;
     }
 
