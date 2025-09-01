@@ -38,7 +38,7 @@ public class ZTileNegativityResolver : MonoBehaviour
         foreach (ListWrapper<Tile> zList in map)
         {
             // This assumes that each list will always contain at least one tile, otherwise.. why is it even there?
-            int zIndex = (int)zList.Values[0].MapCoords.z;
+            int zIndex = zList[0].MapCoords.z;
             if (zIndex < negativityValue)
                 negativityValue = zIndex;
         }
@@ -51,7 +51,7 @@ public class ZTileNegativityResolver : MonoBehaviour
         {
             foreach (Tile tile in zList.Values)
             {
-                tile.MapCoords += new Vector3(0, 0, -negativityValue);
+                tile.MapCoords += new Vector3Int(0, 0, -negativityValue);
             }
         }
 

@@ -14,11 +14,11 @@ public class MenuButtonChangePage : MonoBehaviour, IPointerClickHandler
     [SerializeField] 
     private MenuNavigationSystem.MenuPageManager menuPageManager;
 
+    [SerializeField, Tooltip("This should open a specified page. If this is false, the most recent page opened should close, if possible.")]
+    private bool ShouldOpenMenuPage;
+
     [SerializeField, Sirenix.OdinInspector.ShowIf("ShouldOpenMenuPage")]
     private MenuNavigationSystem.MenuPageDetails menuPageDetails;
-
-    [SerializeField]
-    private bool ShouldOpenMenuPage;
 
     void IPointerClickHandler.OnPointerClick(PointerEventData eventData)
     {

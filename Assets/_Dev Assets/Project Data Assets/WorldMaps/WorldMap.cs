@@ -11,15 +11,17 @@ namespace WorldMapData
 [Serializable]
 public class WorldMap
 {
-    public List<ListWrapper<Tile>> Tiles = new();
+    [Sirenix.OdinInspector.Title("@m_mapName", "@m_isMapTypeBattle ? \"Battle Map\" : \"World Map\"", Sirenix.OdinInspector.TitleAlignments.Centered)]
+
+    [UnityEngine.SerializeField]
+    private string m_mapName;
+    public string MapName { get {return m_mapName;} }
 
     [UnityEngine.SerializeField]
     private bool m_isMapTypeBattle;
     public bool IsMapTypeBattle { get {return m_isMapTypeBattle;} }
 
-    [UnityEngine.SerializeField]
-    private string m_mapName;
-    public string MapName { get {return m_mapName;} }
+    public List<ListWrapper<Tile>> Tiles = new();
 
     public Tile this[int zCoord, int xCoord]
     {
@@ -60,7 +62,7 @@ public class WorldMap
 
         foreach (Tile xTile in zList.Values)
         {
-            if ((int)xTile.MapCoords.x == xCoord)
+            if (xTile.MapCoords.x == xCoord)
             {
                 return xTile;
             }

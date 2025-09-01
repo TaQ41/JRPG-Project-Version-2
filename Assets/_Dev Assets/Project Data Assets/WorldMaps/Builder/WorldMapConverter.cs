@@ -49,7 +49,7 @@ public class WorldMapConverter : SerializedMonoBehaviour
                 Map.Add(new());
             }
 
-            Map[(int)mTile.MapCoords.z].Values.Add(CreateTile(mTile));
+            Map[mTile.MapCoords.z].Values.Add(CreateTile(mTile));
         }
     }
 
@@ -91,7 +91,7 @@ public class WorldMapConverter : SerializedMonoBehaviour
     {
         GameObject mockTile = GameObject.Instantiate(TileMockObject, SceneViewMapGeneratedParent.transform);
         MonobehaviourTile mTile = mockTile.AddComponent<MonobehaviourTile>();
-        mTile.MapCoords = tileContext.MapCoords;
+        mTile.MapCoords = DataConversionHelper.TruncateVector3ToInt(tileContext.MapCoords);
         mockTile.transform.position = tileContext.WorldCoords;
         mockTile.SetActive(true);
     }
@@ -124,7 +124,7 @@ public class WorldMapConverter : SerializedMonoBehaviour
             foreach (Tile objChild in objChildList.Values)
             {
                 text += "new Tile{";
-                text += mapCoordsText + "=" + Vector3ToText(objChild.MapCoords) + ",";
+                text += mapCoordsText + "=" + Vector3IntToText(objChild.MapCoords) + ",";
                 text += worldCoordsText + "=" + Vector3ToText(objChild.WorldCoords) + ",";
                 text += isNavigableText + "=" + BoolToText(objChild.IsNavigable) + ",";
                 text += "},";
@@ -148,6 +148,13 @@ public class WorldMapConverter : SerializedMonoBehaviour
         vec3Text += vec3.y.ToString() + "f,";
         vec3Text += vec3.z.ToString() + "f";
         return vec3Text + ")";
+    }
+
+    private string Vector3IntToText(Vector3Int vec3Int)
+    {
+        string vec3IntText = "new Vector3Int";
+        vec3IntText += vec3Int.ToString();
+        return vec3IntText;
     }
 
     private string BoolToText(bool boolean)
@@ -203,7 +210,7 @@ public class WorldMapConverter : SerializedMonoBehaviour
         Tile tile = new();
 
         text = text[(text.IndexOf(mapCoordsText) + mapCoordsText.Length + 2)..];
-        tile.MapCoords = ExtractVector3FromText(text, out string remainingText1);
+        tile.MapCoords = ExtractVector3IntFromText(text, out string remainingText1);
         text = remainingText1;
 
         text = text[(text.IndexOf(worldCoordsText) + worldCoordsText.Length + 2)..];
@@ -233,6 +240,23 @@ public class WorldMapConverter : SerializedMonoBehaviour
 
         remainingText = text;
         return vec3;
+    }
+
+    private Vector3Int ExtractVector3IntFromText(string text, out string remainingText)
+    {
+        Vector3Int vec3Int = new();
+        text = text[(text.IndexOf('(') + 1)..];
+        vec3Int.x = int.Parse(text[..text.IndexOf(',')]);
+        text = text[(text.IndexOf(',') + 1)..];
+
+        vec3Int.y = int.Parse(text[..text.IndexOf(',')]);
+        text = text[(text.IndexOf(',') + 1)..];
+
+        vec3Int.z = int.Parse(text[..text.IndexOf(')')]);
+        text = text[(text.IndexOf(')') + 1)..];
+        
+        remainingText = text;
+        return vec3Int;
     }
 
     private bool ExtractBoolFromText(string text, out string remainingText)

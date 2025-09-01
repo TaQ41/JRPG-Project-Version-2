@@ -19,7 +19,7 @@ public class Tile
     /// <summary>
     /// The coords of this tile on its map. (Need to be a single 1 point diff for navigation)
     /// </summary>
-    public Vector3 MapCoords;
+    public Vector3Int MapCoords;
 
     /// <summary>
     /// The coords of the tile in the actual world. Used to map the player asset onto the tile.

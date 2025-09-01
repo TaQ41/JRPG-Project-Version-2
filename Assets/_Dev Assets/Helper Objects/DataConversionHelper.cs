@@ -6,4 +6,9 @@ public static class DataConversionHelper
     {
         return new Vector3Int((int)vec3.x, (int)vec3.y, (int)vec3.z);
     }
+
+    public static Vector2Int TruncateVector2ToInt(Vector2 vec2)
+    {
+        return new Vector2Int((int)vec2.x, (int)vec2.y);
+    }
 }

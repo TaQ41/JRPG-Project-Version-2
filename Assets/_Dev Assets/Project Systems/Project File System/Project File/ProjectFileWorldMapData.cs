@@ -14,6 +14,15 @@ public struct ProjectFileWorldMapData
 {
     [SerializeField]
     private List<WorldMap> WorldMaps;
+
+    public readonly WorldMap this[int index]
+    {
+        get
+        {
+            return WorldMaps[index];
+        }
+    }
+
     public readonly void AddMap(WorldMap worldMap)
     {
         try

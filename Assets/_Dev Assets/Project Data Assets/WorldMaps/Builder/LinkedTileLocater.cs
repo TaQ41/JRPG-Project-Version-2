@@ -33,7 +33,7 @@ public class LinkedTileLocater : MonoBehaviour
                 continue;
             }
 
-            if (Math.Abs((int)mTileOrigin.MapCoords.x - (int)mTile.MapCoords.x) == 1)
+            if (Math.Abs(mTileOrigin.MapCoords.x - mTile.MapCoords.x) == 1)
             {
                 if (CompareYZmTiles(mTileOrigin, mTile))
                 {
@@ -42,7 +42,7 @@ public class LinkedTileLocater : MonoBehaviour
                 }
             }
 
-            if (Math.Abs((int)mTileOrigin.MapCoords.z - (int)mTile.MapCoords.z) == 1)
+            if (Math.Abs(mTileOrigin.MapCoords.z - mTile.MapCoords.z) == 1)
             {
                 if (CompareYXmTiles(mTileOrigin, mTile))
                 {

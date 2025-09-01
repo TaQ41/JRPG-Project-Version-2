@@ -9,7 +9,8 @@ namespace DialogueMessageSystem
 /// </summary>
 public class DialogueChainProcessor : MonoBehaviour
 {
-    public static bool IsProcessing = false;
+    [Sirenix.OdinInspector.ShowInInspector]
+    public bool IsProcessing { get; private set; } = false;
 
     [SerializeField]
     private Canvas dialogueObjectCanvas;
