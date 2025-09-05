@@ -28,16 +28,6 @@ public static class CameraPlacement
             throw new NullReferenceException();
         }
 
-        if (cameraGo == null)
-        {
-            if (!TryGetCameraGo(out GameObject cameraGo2))
-            {
-                return false;
-            }
-
-            cameraGo = cameraGo2;
-        }
-
         if (!TryGetEntityGo(entity, out GameObject entityGo))
         {
             return false;
@@ -48,16 +38,12 @@ public static class CameraPlacement
         return true;
     }
 
+    public static void UnlinkCamera(GameObject cameraGo) => cameraGo.transform.SetParent(null);
+
     private static bool TryGetEntityGo(EntityData.Entity entity, out GameObject entityGo)
     {
         entityGo = entity.ActiveGameObject;
         return entityGo != null;
-    }
-
-    private static bool TryGetCameraGo(out GameObject cameraGo)
-    {
-        cameraGo = GameObject.FindWithTag(CameraGameObjectTag);
-        return cameraGo != null;
     }
 }
 }

@@ -19,6 +19,9 @@ public class GameLoader : MonoBehaviour
     [SerializeField] private UIUpdateSystem.UIDisplayer UIDisplayer;
 
     [SerializeField]
+    private EntityPlacement entityPlacement;
+
+    [SerializeField]
     private DialogueMessageSystem.DialogueChainProcessor dialogueChainProcessor;
 
     [SerializeField]
@@ -44,10 +47,7 @@ public class GameLoader : MonoBehaviour
 
         try
         {
-            if (TryActivatePendingGameEvent() == true)
-            {
-                return;
-            }
+            TryActivatePendingGameEvent();
         }
         catch (NotImplementedException)
         {
@@ -89,6 +89,9 @@ public class GameLoader : MonoBehaviour
         }
 
         // Placing entities on map load - II
+        CameraPlacement.UnlinkCamera(cameraObj);
+        entityPlacement.FlushEntitiesOnMap();
+
         EntityPlacement.InitializeEntitiesOnMap(projectFile.Data);
         CameraPlacement.TryLinkCameraToEntity(projectFile.Data.PlayerData.GetCurrentPlayer(), cameraObj);
 
@@ -131,26 +134,8 @@ public class GameLoader : MonoBehaviour
     /// <returns></returns>
     private DialogueMessageSystem.DialogueContainer[] CompilePlayerMessageEffects()
     {
-        return new DialogueMessageSystem.DialogueContainer[3]
-        {
-            new()
-            {
-                Message = "Message I",
-                MessageFormat = DialogueMessageSystem.DialogueContainer.MessageFormats.None,
-            },
-            new()
-            {
-                Message = "Message II",
-                MessageFormat = DialogueMessageSystem.DialogueContainer.MessageFormats.None,
-            },
-            new()
-            {
-                Message = "Message III",
-                MessageFormat = DialogueMessageSystem.DialogueContainer.MessageFormats.None,
-            },
-        };
         //throw new NotImplementedException();
-        // return new DialogueMessageSystem.DialogueContainer[0];
+        return new DialogueMessageSystem.DialogueContainer[0];
     }
 
     /// <summary>
@@ -158,23 +143,17 @@ public class GameLoader : MonoBehaviour
     /// </summary>
     public IEnumerator EndTurn()
     {
-        float wrapperTimeToHide = 2f; // Delete this when creating the actual wrapper object.
+        float wrapperTimeToHide = 1f; // Delete this when creating the actual wrapper object.
 
         float elapsedTime = 0f;
         while (elapsedTime < wrapperTimeToHide)
         {
-            elapsedTime += Time.unscaledDeltaTime;
+            elapsedTime += Time.deltaTime;
             yield return null;
         }
 
-        try
-        {
-            SceneManager.UnloadSceneAsync(GameMapSceneContext);
-        }
-        finally
-        {
-            LoadGameTurnStart();
-        }
+        SceneManager.UnloadSceneAsync(GameMapSceneContext);
+        LoadGameTurnStart();
     }
 }
 }

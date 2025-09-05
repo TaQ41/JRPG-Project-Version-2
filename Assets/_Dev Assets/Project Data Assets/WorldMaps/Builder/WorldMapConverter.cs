@@ -91,7 +91,7 @@ public class WorldMapConverter : SerializedMonoBehaviour
     {
         GameObject mockTile = GameObject.Instantiate(TileMockObject, SceneViewMapGeneratedParent.transform);
         MonobehaviourTile mTile = mockTile.AddComponent<MonobehaviourTile>();
-        mTile.MapCoords = DataConversionHelper.TruncateVector3ToInt(tileContext.MapCoords);
+        mTile.MapCoords = tileContext.MapCoords;
         mockTile.transform.position = tileContext.WorldCoords;
         mockTile.SetActive(true);
     }

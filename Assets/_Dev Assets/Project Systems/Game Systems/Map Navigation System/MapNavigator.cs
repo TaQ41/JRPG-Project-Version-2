@@ -1,110 +1,87 @@
 using System;
-using EntityData;
+using System.Collections.Generic;
 using UnityEngine;
 using WorldMapData;
 
 namespace MapNavigationSystem
 {
-    public class MapNavigator : MonoBehaviour
+
+/// <summary>
+/// Refactored version to navigate through tiles.
+/// </summary>
+public class MapNavigator : MonoBehaviour
+{
+    [SerializeField]
+    private MoveSession sessionUser;
+
+    public WorldMap WorldMap { get; set; }
+
+    /// <summary>
+    /// Records the tile coords that the entity was on before it moved.
+    /// Starts with the original position. This is so the CurrTile can be guaranteed to be found.
+    /// </summary>
+    public List<Vector3Int> MoveHistory { get; set; }
+    private Tile CurrTile;
+
+    public void MoveEntity(Vector2Int dir)
     {
-        [SerializeField]
-        private ActiveProjectFile activeProjectFile;
-
-        public int RemMoveCount;
-        private Vector3Int currPos;
-        private WorldMap worldMap;
-
-        // TryMoveToTile Unique Return codes
-        public const int NO_ISSUES = 0;
-        public const int TILE_DOES_NOT_EXIST = 1;
-        public const int INSUFFICIENT_MOVECOUNT = 2;
-        public const int CUSTOM_CONDITION_FAIL = 3;
-        public const int OUT_OF_RANGE = 4;
-
-        public void ExtractPlayerInfo()
+        // Initializations
+        Vector3Int currPos = MoveHistory[^1];
+        Vector3Int destPos = currPos + new Vector3Int(dir.x, 0, dir.y);
+        CurrTile = WorldMap[currPos.z, currPos.x];
+        
+        if (MoveHistory.Count > 1 && MoveHistory[^2] == destPos)
         {
-            Player currPlayer = activeProjectFile.Data.PlayerData.GetCurrentPlayer();
-            currPos = currPlayer.WorldTileCoords;
-
-            worldMap = activeProjectFile.Data.WorldMapData.SearchForMap(currPlayer.livingMapName);
+            MoveBackward();
+            return;
         }
 
-        /// <summary>
-        /// Fetches the current entity from the container and the map set in the container.
-        /// Note: Without the container DS, this will take a raw Entity and worldMap.
-        /// </summary>
-        public void ExtractEntityInfo(Entity entity, WorldMap worldMap2)
+        // Not enough moves to move on this tile.
+        int moveDecrementCount = CurrTile.MoveDecrementAmount;
+        if (sessionUser.MoveCount - moveDecrementCount < 0)
         {
-            currPos = entity.BattleTileCoords;
-            worldMap = worldMap2;
+            Debug.Log("Not enough moves detected!");
+            return;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="tile"></param>
-        /// <returns>
-        /// Return codes that indicate what happened, so the game reacts as it should
-        /// These return codes are constant and set in this class.
-        /// </returns>
-        public int TryMoveToTile(Vector3Int destCoords, out Tile destTile)
+        // The next tile doesn't exist.
+        if (WorldMap.TryGetTile(destPos.z, destPos.x, out Tile destTile) == false)
         {
-            destTile = default;
-            Debug.Log("currPos: " + currPos);
-            Tile currTile = worldMap[currPos.z, currPos.x];
-
-            if (RemMoveCount < currTile.MoveDecrementAmount)
-            {
-                return INSUFFICIENT_MOVECOUNT;
-            }
-
-            Vector3Int destPos = currPos + destCoords;
-            Debug.Log("destPos: " + destPos);
-            if (!worldMap.TryGetTile(destPos.z, destPos.x, out Tile destTile2))
-            {
-                return TILE_DOES_NOT_EXIST;
-            }
-
-            if (DidAllCustomConditionsPass(destTile2) == false)
-            {
-                return CUSTOM_CONDITION_FAIL;
-            }
-
-            if (IsEntityInRangeOfTile(destTile2) == false)
-            {
-                return OUT_OF_RANGE;
-            }
-
-            destTile = destTile2;
-            return NO_ISSUES;
+            Debug.Log($"Tile not located! x: {destPos.x}, z: {destPos.z}");
+            return;
         }
 
-        private bool DidAllCustomConditionsPass(Tile destTile)
+        // Placeholder until player effects and tile properties can affect these.
+        // The tile isn't within the required y-range to be moved to.
+        if (IsInYRange(destTile, 1) == false)
         {
-            return true;
+            Debug.Log("Too much y diff.");
+            return;
         }
 
-        private bool IsEntityInRangeOfTile(Tile tile, int range = 1, int maxYDiff = 1)
-        {
-            int gridDistDiff = GetDiffOfTwoInts(currPos.x, (int)tile.MapCoords.x) + GetDiffOfTwoInts(currPos.z, (int)tile.MapCoords.z);
-            int yDiff = GetDiffOfTwoInts(currPos.y, (int)tile.MapCoords.y);
-
-            if (gridDistDiff > range)
-            {
-                return false;
-            }
-
-            if (yDiff > maxYDiff)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        private int GetDiffOfTwoInts(int a, int b)
-        {
-            return Math.Abs(b - a);
-        }
+        MoveHistory.Add(destPos);
+        sessionUser.MoveCount -= moveDecrementCount;
+        sessionUser.PassTile(destTile);
     }
+
+    private bool IsInYRange(Tile destTile, int maxYDiff)
+    {
+        int yDiff = Math.Abs(destTile.MapCoords.y - CurrTile.MapCoords.y);
+        return maxYDiff >= yDiff;
+    }
+
+    public void MoveBackward()
+    {
+        if (MoveHistory.Count == 1)
+            return;
+
+        Vector3Int destPos = MoveHistory[^2];
+        MoveHistory.RemoveAt(MoveHistory.Count - 1);
+        
+        Tile destTile = WorldMap[destPos.z, destPos.x];
+
+        sessionUser.MoveCount += destTile.MoveDecrementAmount;
+        sessionUser.PassTile(destTile);
+    }
+}
 }

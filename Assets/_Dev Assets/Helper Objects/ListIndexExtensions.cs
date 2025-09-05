@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Sirenix.Utilities;
+using UnityEngine;
 
 public static class ListIndexExtensions
 {
@@ -21,26 +22,5 @@ public static class ListIndexExtensions
         {
             throw new NullReferenceException(EmptyOrNullValuesListMessage);
         }
-    }
-
-    /// <summary>
-    /// Get the current item using an index of a given list.
-    /// </summary>
-    /// <returns>The item of the list's index.</returns>
-    /// <exception cref="NullReferenceException"></exception>
-    /// <exception cref="IndexOutOfRangeException"></exception>
-    public static T GetItem<T>(this List<T> values, int index)
-    {
-        if (values.IsNullOrEmpty())
-        {
-            throw new NullReferenceException(EmptyOrNullValuesListMessage);
-        }
-
-        if (index >= values.Count || index < 0)
-        {
-            throw new IndexOutOfRangeException();
-        }
-
-        return values[index];
     }
 }

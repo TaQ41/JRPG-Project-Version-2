@@ -33,7 +33,7 @@ public struct ProjectFilePlayerData
     {
         try
         {
-            return Players.GetItem(index);
+            return Players[index];
         }
         catch
         {
