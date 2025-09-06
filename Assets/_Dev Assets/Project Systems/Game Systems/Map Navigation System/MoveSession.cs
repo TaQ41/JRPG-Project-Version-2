@@ -111,7 +111,7 @@ public class MoveSession: MonoBehaviour
         MoveCount = GenerateMoveCount();
         if (MoveCount == 0)
         {
-            // Jump to the landed on tile method with the player's current tile.
+            EndMoveSession(wasZero: true);
             return;
         }
 
@@ -121,12 +121,15 @@ public class MoveSession: MonoBehaviour
             InitializeForBattleEnv();
             return;
         }
-            
+
         InitializeForPlayerEnv();
     }
 
     void OnDisable()
     {
+        if (inputActions == null)
+            return;
+
         inputActions.MoveControls.Disable();
 
         inputActions.MoveControls.LandOnTile.performed -= OnLandOnTile;
@@ -136,16 +139,13 @@ public class MoveSession: MonoBehaviour
 
     private void OnLandOnTile(InputAction.CallbackContext context)
     {
-        Debug.Log("Attempting to confirm position for landing!");
-
         if (mapNavigator.MoveHistory.Count == 1)
         {
             Debug.Log("Can't land with no moves played!");
             return;
         }
 
-        OnDisable();
-        LandOnTile();
+        EndMoveSession();
     }
 
     private void OnMovePlayer(InputAction.CallbackContext context)
@@ -172,8 +172,14 @@ public class MoveSession: MonoBehaviour
     /// <summary>
     /// Called after confirming the current tile to be the tile the player should be set to.
     /// </summary>
-    public void LandOnTile()
+    public void EndMoveSession(bool wasZero = false)
     {
+        OnDisable();
+        StartCoroutine(gameLoader.EndTurn());
+
+        if (wasZero)
+            return;
+
         if (mapNavigator.WorldMap.IsMapTypeBattle)
         {
             CurrentPlayer.BattleTileCoords = CurrentTile.MapCoords;
@@ -182,9 +188,6 @@ public class MoveSession: MonoBehaviour
         {
             CurrentPlayer.WorldTileCoords = CurrentTile.MapCoords;
         }
-
-        StartCoroutine(
-            gameLoader.EndTurn());
     }
 }
 }

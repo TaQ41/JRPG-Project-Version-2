@@ -22,6 +22,9 @@ public class GameLoader : MonoBehaviour
     private EntityPlacement entityPlacement;
 
     [SerializeField]
+    private MenuNavigationSystem.MenuPageManager gameviewPlayerActionsMenu;
+
+    [SerializeField]
     private DialogueMessageSystem.DialogueChainProcessor dialogueChainProcessor;
 
     [SerializeField]
@@ -31,10 +34,13 @@ public class GameLoader : MonoBehaviour
     private Scene GameMapSceneContext;
 
     /// <summary>
-    /// 
+    /// Resets menus, handles player turn index switching, and begins events that have been pending.
+    /// Called before the player's turn begins and after the player's turn ends.
     /// </summary>
     public void LoadGameTurnStart(bool firstPass = false)
     {
+        gameviewPlayerActionsMenu.Awake();
+
         // Disable all player input
         if (firstPass == false)
         {
@@ -96,8 +102,8 @@ public class GameLoader : MonoBehaviour
         CameraPlacement.TryLinkCameraToEntity(projectFile.Data.PlayerData.GetCurrentPlayer(), cameraObj);
 
         // Readying player UI - III
+        UIDataLinker.LinkAll();
         UIDisplayer.Show(UIDisplayer.PlayerInfoCanvas);
-        UIDataLinker.LinkPlayerInfo();
 
         // Compile player messages for effects - IV
         DialogueMessageSystem.DialogueContainer[] compiledPlayerMessages = CompilePlayerMessageEffects();

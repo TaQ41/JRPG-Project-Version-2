@@ -13,46 +13,21 @@ public class UIDataLinker : MonoBehaviour
     [SerializeField]
     private ActiveProjectFile activeProjectFile;
 
+    [SerializeField]
+    private MapNavigationSystem.MoveSession moveSession;
+
+    [SerializeField]
+    private TextMeshProUGUI playerNameInfoText, playerTurnIndexInfoText, playerMoveCountText;
+
     public void LinkAll()
     {
-        LinkPlayerInfo();
+        playerNameInfoText.text = "Player Name: " + activeProjectFile.Data.PlayerData.GetCurrentPlayer().DisplayName;
+        playerTurnIndexInfoText.text = "Player Turn Index: " + activeProjectFile.Data.PlayerData.PlayerTurn.ToString();
     }
 
-    public void LinkPlayerInfo()
+    void Update()
     {
-        LinkPlayerNameInfo();
-        LinkPlayerTurnIndexInfo();
-    }
-
-    [SerializeField]
-    private TextMeshProUGUI playerNameInfoText;
-
-    private void LinkPlayerNameInfo()
-    {
-        try
-        {
-            playerNameInfoText.text = activeProjectFile.Data.PlayerData.GetCurrentPlayer().DisplayName;
-        }
-        catch (NullReferenceException e)
-        {
-            Debug.Log(e.Message);
-        }
-    }
-
-
-    [SerializeField]
-    private TextMeshProUGUI playerTurnIndexInfoText;
-
-    private void LinkPlayerTurnIndexInfo()
-    {
-        try
-        {
-            playerTurnIndexInfoText.text = activeProjectFile.Data.PlayerData.PlayerTurn.ToString();
-        }
-        catch (NullReferenceException e)
-        {
-            Debug.Log(e.Message);
-        }
+        playerMoveCountText.text = "Move Count: " + moveSession.MoveCount.ToString();
     }
 }
 }

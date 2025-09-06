@@ -17,7 +17,10 @@ public class MenuPageManager : MonoBehaviour
     [SerializeField]
     private MenuPageDetails entryMenuPage;
 
-    void Awake()
+    /// <summary>
+    /// Used to reset the Menu.
+    /// </summary>
+    public void Awake()
     {
         menuPages = new();
         insetMenuPages = new();
@@ -82,7 +85,19 @@ public class MenuPageManager : MonoBehaviour
     }
 
     /// <summary>
-    /// NOTE: Called from the close page method, so, there being at least one item has already been confirmed.
+    /// Used to update the enabled state of all menu pages that could be currently enabled to the user.
+    /// </summary>
+    /// <param name="enabledState"></param>
+    public void ChangeMenuEnabledState(bool enabledState)
+    {
+        foreach (MenuPageDetails insetMenuPage in insetMenuPages)
+            TryUpdateCanvasEnabledState(insetMenuPage, enabledState);
+
+        TryUpdateCanvasEnabledState(menuPages[^1], enabledState);
+    }
+
+    /// <summary>
+    /// NOTE: Called from the close page method, so, there being at least two items has already been confirmed.
     /// </summary>
     private void RemoveAndDeactivateLastMenuPage(List<MenuPageDetails> menuPagesList)
     {
