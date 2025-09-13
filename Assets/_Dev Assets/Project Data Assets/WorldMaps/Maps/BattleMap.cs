@@ -5,7 +5,7 @@ namespace WorldMapData.Maps
 {
 
 /// <summary>
-/// 
+/// The default map used for testing battle maps.
 /// </summary>
 public static class BattleMap
 {

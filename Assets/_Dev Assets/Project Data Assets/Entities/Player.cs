@@ -22,7 +22,7 @@ public class Player : Entity
     /// </summary>
     public Vector3Int WorldTileCoords;
 
-    // public int BattleMapId;
+    public string BattleGuidName = string.Empty;
 
     [Sirenix.OdinInspector.Title ("Player Identity")]
 

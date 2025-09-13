@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace GameLoadingSystem
@@ -12,8 +11,11 @@ namespace GameLoadingSystem
 public class EntityPlacement : MonoBehaviour
 {
     public const string EntitiesInSceneParentTag = "Entities In Scene Parent";
-    private static ProjectFileSystem.ProjectFileHeader projectFileHeader;
-    private static WorldMapData.WorldMap worldMap;
+    private ProjectFileSystem.ProjectFileHeader projectFileHeader;
+    private WorldMapData.WorldMap worldMap;
+
+    [SerializeField]
+    private BattleSystem.BattleHandler battleHandler;
 
     public void FlushEntitiesOnMap()
     {
@@ -28,7 +30,7 @@ public class EntityPlacement : MonoBehaviour
     /// Attempt to get the player's map, find all the entities within that map at the moment, and finally, move them to those positions.
     /// </summary>
     /// <param name="data"></param>
-    public static void InitializeEntitiesOnMap(ProjectFileSystem.ProjectFileHeader data)
+    public void InitializeEntitiesOnMap(ProjectFileSystem.ProjectFileHeader data)
     {
         projectFileHeader = data;
         EntityData.Player currPlayer = projectFileHeader.PlayerData.GetCurrentPlayer();
@@ -49,7 +51,7 @@ public class EntityPlacement : MonoBehaviour
 
         if (worldMap.IsMapTypeBattle == true)
         {
-            foreach (EntityData.Entity entity in FindEntitiesInBattle())
+            foreach (EntityData.Entity entity in battleHandler.GetBattleByGuidName(currPlayer.BattleGuidName).Entities)
             {
                 entity.ActiveGameObject = GameObject.Instantiate(entity.EntityObjectAsset, entitiesInSceneParent);
                 PlaceEntity(entity, worldCoords: worldMap.Tiles[entity.BattleTileCoords.z][entity.BattleTileCoords.x].WorldCoords);
@@ -79,13 +81,6 @@ public class EntityPlacement : MonoBehaviour
     {
         Vector3 tileFloatHeight = new(0f, entity.TileFloatHeight, 0f);
         entity.ActiveGameObject.transform.position = worldCoords + tileFloatHeight;
-    }
-
-    private static List<EntityData.Entity> FindEntitiesInBattle()
-    {
-        // Needs their to be a structure to store concurrent battle information (also serializable).
-
-        return default;
     }
 }
 }

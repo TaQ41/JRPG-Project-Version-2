@@ -5,7 +5,7 @@ namespace WorldMapData.Maps
 {
 
 /// <summary>
-/// 
+/// Default map used for testing player maps and as the main centerpiece.
 /// </summary>
 public static class TutorialMap
 {

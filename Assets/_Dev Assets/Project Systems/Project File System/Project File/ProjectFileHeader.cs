@@ -20,7 +20,8 @@ public class ProjectFileHeader
     public GameEventData.GameEventCallingContext NextGameEvent;
 
     public ProjectFilePlayerData PlayerData;
-
     public ProjectFileWorldMapData WorldMapData;
+
+    public List<BattleSystem.BattleContainer> CurrentBattles = new();
 }
 }

@@ -22,7 +22,7 @@ public class Tile
     public Vector3Int MapCoords;
 
     /// <summary>
-    /// The coords of the tile in the actual world. Used to map the player asset onto the tile.
+    /// The coords of the tile in the actual world. Used to map entity assets onto the tile.
     /// (The player placement will place the player slightly above these coords.)
     /// </summary>
     public Vector3 WorldCoords;

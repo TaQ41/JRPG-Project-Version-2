@@ -7,7 +7,8 @@ namespace MapNavigationSystem
 {
 
 /// <summary>
-/// 
+/// Control the calls made within the game to move within maps and get the results.
+/// Initialize the environment based on the current player.
 /// </summary>
 public class MoveSession: MonoBehaviour
 {
@@ -19,6 +20,9 @@ public class MoveSession: MonoBehaviour
 
     [SerializeField]
     private MapNavigator mapNavigator;
+
+    [SerializeField]
+    private BattleSystem.BattleHandler battleHandler;
 
     [SerializeField]
     private ProjectInputActionAsset inputActions;
@@ -146,6 +150,14 @@ public class MoveSession: MonoBehaviour
         }
 
         EndMoveSession();
+
+        // "Battle" is a placeholder, the tile will decide this.
+        int battleIndex = battleHandler.GenerateBattle(activeProjectFile.Data.WorldMapData.SearchForMap("Battle"));
+        CurrentPlayer.JoinBattle(activeProjectFile.Data.CurrentBattles[battleIndex]);
+        
+        // PlaceHolder enemies, these are decided by later factors
+        new EntityData.Goblin().JoinBattle(activeProjectFile.Data.CurrentBattles[battleIndex]);
+        gameLoader.LoadGameWorld(); // Reload the GameWorld now.
     }
 
     private void OnMovePlayer(InputAction.CallbackContext context)
@@ -175,7 +187,6 @@ public class MoveSession: MonoBehaviour
     public void EndMoveSession(bool wasZero = false)
     {
         OnDisable();
-        StartCoroutine(gameLoader.EndTurn());
 
         if (wasZero)
             return;

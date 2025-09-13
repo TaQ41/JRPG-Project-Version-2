@@ -70,5 +70,11 @@ public class WorldMap
 
         return null;
     }
+
+    public WorldMap DeepCopy()
+    {
+        string jsonCopy = UnityEngine.JsonUtility.ToJson(this);
+        return UnityEngine.JsonUtility.FromJson<WorldMap>(jsonCopy);
+    }
 }
 }

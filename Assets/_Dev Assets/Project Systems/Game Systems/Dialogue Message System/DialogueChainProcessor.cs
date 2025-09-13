@@ -4,9 +4,6 @@ using UnityEngine;
 namespace DialogueMessageSystem
 {
 
-/// <summary>
-/// 
-/// </summary>
 public class DialogueChainProcessor : MonoBehaviour
 {
     [Sirenix.OdinInspector.ShowInInspector]

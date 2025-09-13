@@ -6,7 +6,7 @@ namespace ProjectFileSystem
 {
 
 /// <summary>
-/// 
+/// A data structure that is used to hold information about players and index through them.
 /// </summary>
 [Serializable]
 public struct ProjectFilePlayerData

@@ -8,7 +8,7 @@ namespace GameLoadingSystem
 {
 
 /// <summary>
-/// 
+/// Load the game of the current player, initialize it, and end it.
 /// </summary>
 public class GameLoader : MonoBehaviour
 {
@@ -28,10 +28,13 @@ public class GameLoader : MonoBehaviour
     private DialogueMessageSystem.DialogueChainProcessor dialogueChainProcessor;
 
     [SerializeField]
-    private ActiveProjectFile projectFile;
-    private EntityData.Player CurrentPlayer { get {return projectFile.Data.PlayerData.GetCurrentPlayer();} }
+    private BattleSystem.BattleHandler battleHandler;
 
-    private Scene GameMapSceneContext;
+    [SerializeField]
+    private ActiveProjectFile projectFile;
+    private EntityData.Player CurrentPlayer = null;
+
+    private string GameMapSceneContext = string.Empty;
 
     /// <summary>
     /// Resets menus, handles player turn index switching, and begins events that have been pending.
@@ -39,6 +42,7 @@ public class GameLoader : MonoBehaviour
     /// </summary>
     public void LoadGameTurnStart(bool firstPass = false)
     {
+        CurrentPlayer = projectFile.Data.PlayerData.GetCurrentPlayer();
         gameviewPlayerActionsMenu.Awake();
 
         // Disable all player input
@@ -60,7 +64,7 @@ public class GameLoader : MonoBehaviour
             Debug.Log("The game events have not been implemented.");
         }
 
-        LoadGameTurnWorld();
+        LoadGameWorld();
     }
 
     /// <summary>
@@ -79,10 +83,7 @@ public class GameLoader : MonoBehaviour
         return false;*/
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public void LoadGameTurnWorld()
+    public void LoadGameWorld()
     {
         // Map loading - I
         try
@@ -94,13 +95,26 @@ public class GameLoader : MonoBehaviour
             return; // The transition error helper scene or the error helper scene has been loaded, stop here.
         }
 
-        // Placing entities on map load - II
         CameraPlacement.UnlinkCamera(cameraObj);
         entityPlacement.FlushEntitiesOnMap();
 
-        EntityPlacement.InitializeEntitiesOnMap(projectFile.Data);
-        CameraPlacement.TryLinkCameraToEntity(projectFile.Data.PlayerData.GetCurrentPlayer(), cameraObj);
+        entityPlacement.InitializeEntitiesOnMap(projectFile.Data);
+        CameraPlacement.TryLinkCameraToEntity(CurrentPlayer, cameraObj);
 
+        if (CurrentPlayer.BattleGuidName.Equals(string.Empty))
+        {
+            LoadPlayerWorld();
+            return;
+        }
+
+        LoadBattleWorld();
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    private void LoadPlayerWorld()
+    {
         // Readying player UI - III
         UIDataLinker.LinkAll();
         UIDisplayer.Show(UIDisplayer.PlayerInfoCanvas);
@@ -112,6 +126,11 @@ public class GameLoader : MonoBehaviour
         // Enable Input - V
     }
 
+    private void LoadBattleWorld()
+    {
+        Debug.Log("BattleWorld is loading");
+    }
+
     /// <summary>
     /// 
     /// </summary>
@@ -119,18 +138,24 @@ public class GameLoader : MonoBehaviour
     /// <exception cref="NullReferenceException"></exception>
     private async Task LoadGameMap()
     {
-        EntityData.Player player = CurrentPlayer;
-        string loadedMapName = player.livingMapName;
+        if (!GameMapSceneContext.Equals(string.Empty))
+            await SceneManager.UnloadSceneAsync(GameMapSceneContext);
+
+        if (CurrentPlayer.BattleGuidName.Equals(string.Empty))
+            GameMapSceneContext = CurrentPlayer.livingMapName;
+        else
+            GameMapSceneContext = battleHandler.GetBattleByGuidName(CurrentPlayer.BattleGuidName).BattleMap.MapName;
+
+        GameMapSceneContext += " Scene";
 
         try
         {
-            await SceneManager.LoadSceneAsync(loadedMapName + " Scene", LoadSceneMode.Additive);
-            GameMapSceneContext = SceneManager.GetSceneByName(loadedMapName + " Scene");
+            await SceneManager.LoadSceneAsync(GameMapSceneContext, LoadSceneMode.Additive);
         }
         catch
         {
             SceneTransitionSystem.TransitionManagerUser.LoadTransitionErrorHelper();
-            throw new NullReferenceException("Scene name (" + loadedMapName + ") was not found!");
+            throw new NullReferenceException("Scene name (" + GameMapSceneContext + ") was not found!");
         }
     }
 
@@ -158,7 +183,6 @@ public class GameLoader : MonoBehaviour
             yield return null;
         }
 
-        SceneManager.UnloadSceneAsync(GameMapSceneContext);
         LoadGameTurnStart();
     }
 }
