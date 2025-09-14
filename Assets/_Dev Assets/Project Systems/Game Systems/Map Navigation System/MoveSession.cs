@@ -153,10 +153,10 @@ public class MoveSession: MonoBehaviour
 
         // "Battle" is a placeholder, the tile will decide this.
         int battleIndex = battleHandler.GenerateBattle(activeProjectFile.Data.WorldMapData.SearchForMap("Battle"));
-        CurrentPlayer.JoinBattle(activeProjectFile.Data.CurrentBattles[battleIndex]);
+        battleHandler.JoinBattle(CurrentPlayer, activeProjectFile.Data.CurrentBattles[battleIndex]);
         
         // PlaceHolder enemies, these are decided by later factors
-        new EntityData.Goblin().JoinBattle(activeProjectFile.Data.CurrentBattles[battleIndex]);
+        battleHandler.JoinBattle(new EntityData.Goblin(), activeProjectFile.Data.CurrentBattles[battleIndex]);
         gameLoader.LoadGameWorld(); // Reload the GameWorld now.
     }
 

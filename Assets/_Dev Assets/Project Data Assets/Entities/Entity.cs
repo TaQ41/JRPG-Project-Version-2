@@ -1,8 +1,5 @@
 using System;
-using System.Collections;
 using UnityEngine;
-using UnityEngine.ResourceManagement.AsyncOperations;
-using UnityEngine.AddressableAssets;
 
 namespace EntityData
 {
@@ -23,22 +20,10 @@ public class Entity
     /// </summary>
     public GameObject EntityObjectAsset;
 
-    protected IEnumerator LoadEntityObjectAsset(string key)
-    {
-        AsyncOperationHandle<GameObject> handle = Addressables.LoadAssetAsync<GameObject>(key);
-        yield return handle;
-
-        if (handle.Status == AsyncOperationStatus.Succeeded)
-        {
-            EntityObjectAsset = handle.Result;
-        }
-        else
-        {
-            Debug.LogError("Failed to load the addressable at: " + key);
-        }
-
-        Addressables.Release(handle);
-    }
+    /// <summary>
+    /// The key of the entity's base GameObject found in the EntityBrowser
+    /// </summary>
+    public virtual string GetPrefabKey() => string.Empty;
 
     /// <summary>
     /// What GameObject in the current map can this entity be accessed at?
@@ -54,29 +39,5 @@ public class Entity
     /// The turn that this entity is placed at in a battle. Used to delete the correct entity when having them leave the battle.
     /// </summary>
     public int BattleTurn;
-
-    public void JoinBattle(BattleSystem.BattleContainer battle)
-    {
-        if (this is Player player)
-            player.BattleGuidName = battle.GuidName;
-        
-        BattleTurn = battle.Entities.Count;
-        battle.Entities.Add(this);
-    }
-
-    public void LeaveBattle(BattleSystem.BattleContainer battle)
-    {
-        battle.Entities.RemoveAt(BattleTurn);
-
-        // Fix the turns of entities that came after the one leaving.
-        for (int i = BattleTurn; i < battle.Entities.Count; i++)
-            battle.Entities[i].BattleTurn--;
-
-        if (battle.BattleTurnOrder >= BattleTurn)
-            battle.BattleTurnOrder -= 1;
-
-        if (this is Player player)
-            player.BattleGuidName = string.Empty;
-    }
 }
 }

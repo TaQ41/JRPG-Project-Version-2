@@ -10,12 +10,12 @@ namespace EntityData
 [Serializable]
 public class Goblin : Entity
 {
-    private const string GoblinAddressableKey = "Assets/_Dev Assets/Project Data Assets/Entities/Goblin/Goblin Entity Object.prefab";
+    private const string PrefabKey = "Goblin";
+    public override string GetPrefabKey() => PrefabKey;
     
     public Goblin()
     {
-        TileFloatHeight = 1f;   
-        _ = LoadEntityObjectAsset(GoblinAddressableKey);
+        TileFloatHeight = 1f;
     }
 }
 }

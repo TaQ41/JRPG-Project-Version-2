@@ -34,7 +34,12 @@ public class EntityPlacement : MonoBehaviour
     {
         projectFileHeader = data;
         EntityData.Player currPlayer = projectFileHeader.PlayerData.GetCurrentPlayer();
-        string currPlayerMapName = currPlayer.livingMapName;
+
+        string currPlayerMapName;
+        if (currPlayer.BattleGuidName.Equals(string.Empty))
+            currPlayerMapName = currPlayer.livingMapName;
+        else
+            currPlayerMapName = battleHandler.GetBattleByGuidName(currPlayer.BattleGuidName).BattleMap.MapName;
 
         try
         {

@@ -10,6 +10,9 @@ namespace EntityData
 [Serializable]
 public class Player : Entity
 {
+    private const string PrefabKey = "PlayerBase";
+    public override string GetPrefabKey() => PrefabKey;
+
     [Sirenix.OdinInspector.Title ("Map Location", horizontalLine: false)]
 
     /// <summary>

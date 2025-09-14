@@ -1,6 +1,4 @@
 using System;
-using EntityData;
-using System.Linq;
 using UnityEngine;
 
 namespace BattleSystem
@@ -13,6 +11,9 @@ public class BattleHandler : MonoBehaviour
 {
     [SerializeField]
     private ActiveProjectFile activeProjectFile;
+
+    [SerializeField]
+    private EntityData.EntityBrowser entityBrowser;
 
     /// <summary>
     /// Generates a new battle and appends it to the currentBattles list in the activepProjectFile.
@@ -47,6 +48,38 @@ public class BattleHandler : MonoBehaviour
         }
 
         return default;
+    }
+
+    public void JoinBattle(EntityData.Entity entity, BattleContainer battle)
+    {
+        if (entity is EntityData.Player player)
+        {
+            player.BattleGuidName = battle.GuidName;
+        }
+        else
+        {
+            GameObject prefab = entityBrowser.BrowseForEntity(entity.GetPrefabKey());
+            if (prefab != null)
+                entity.EntityObjectAsset = prefab;
+        }
+        
+        entity.BattleTurn = battle.Entities.Count;
+        battle.Entities.Add(entity);
+    }
+
+    public void LeaveBattle(EntityData.Entity entity, BattleContainer battle)
+    {
+        battle.Entities.RemoveAt(entity.BattleTurn);
+
+        // Fix the turns of entities that came after the one leaving.
+        for (int i = entity.BattleTurn; i < battle.Entities.Count; i++)
+            battle.Entities[i].BattleTurn--;
+
+        if (battle.BattleTurnOrder >= entity.BattleTurn)
+            battle.BattleTurnOrder -= 1;
+
+        if (entity is EntityData.Player player)
+            player.BattleGuidName = string.Empty;
     }
 }
 }
